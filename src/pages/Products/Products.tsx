@@ -1,7 +1,6 @@
-import { MovieCard } from "@/components/MovieCard/MovieCard";
+import { ProductCard } from "@/components/ProductCard/ProductCard";
 import { useGetProductsQuery } from "@/redux/api/api";
-import { TMovie } from "@/types";
-import { ProductTableView } from "./ProductTableView";
+import { IProduct } from "@/types";
 
 export default function Products() {
   const { data: products, isLoading } = useGetProductsQuery({});
@@ -15,11 +14,10 @@ export default function Products() {
   return (
     <div className="container mx-auto">
       <div className="grid md:grid-cols-4 sm:grid-cols-1 gap-4 mx-auto my-5">
-        {products?.data?.map((movie: TMovie) => (
-          <MovieCard key={movie?._id} movie={movie} />
+        {products?.data?.map((product: IProduct) => (
+          <ProductCard key={product?._id} product={product} />
         ))}
       </div>
-      <ProductTableView />
     </div>
   );
 }

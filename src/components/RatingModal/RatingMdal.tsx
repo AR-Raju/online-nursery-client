@@ -8,34 +8,36 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { TMovie } from "@/types";
+import { useAddRatingMutation } from "@/redux/api/api";
+import { IProduct } from "@/types";
 import { Plus, Star } from "lucide-react";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import Rating from "react-rating";
+import { toast } from "sonner";
 // import { useAddRatingMutation } from "@/redux/api/api";
 
-export function RatingModal({ movie }: { movie: TMovie }) {
+export function RatingModal({ product }: { product: IProduct }) {
   const { register, handleSubmit } = useForm();
   const [ratingValue, setRatingValue] = useState(0);
-  // const [addRating] = useAddRatingMutation();
+  const [addRating] = useAddRatingMutation();
 
   const onSubmit = async (values: FieldValues) => {
     console.log(values);
-    // const { _id, slug } = movie;
-    // const data = {
-    //   ...values,
-    //   rating: ratingValue,
-    //   movie: _id,
-    // };
-    // try {
-    //   const res = await addRating({ data, slug }).unwrap();
-    //   if (res?.success) {
-    //     toast.success(res?.message);
-    //   }
-    // } catch (err) {
-    //   console.error(err);
-    // }
+    const { _id } = product;
+    const data = {
+      ...values,
+      rating: ratingValue,
+      product: _id,
+    };
+    try {
+      const res = await addRating({ data }).unwrap();
+      if (res?.success) {
+        toast.success(res?.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -48,20 +50,20 @@ export function RatingModal({ movie }: { movie: TMovie }) {
       </DialogTrigger>
       <DialogContent className="bg-gray-800 text-white border-0">
         <DialogHeader>
-          <DialogTitle className="text-center text-3xl font-bold text-yellow-400">
+          <DialogTitle className="text-center text-3xl font-bold text-nursery-primary">
             RATE THIS
           </DialogTitle>
-          <h1 className="text-center text-2xl ">{movie?.title}</h1>
+          <h1 className="text-center text-2xl ">{product?.name}</h1>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="text-center pt-2">
             {/* @ts-expect-error their is no type declaration file for react rating*/}
             <Rating
-              emptySymbol={<Star size={40} color="orange" />}
-              fullSymbol={<Star size={40} color="orange" fill="orange" />}
+              emptySymbol={<Star size={40} color="green" />}
+              fullSymbol={<Star size={40} color="green" fill="green" />}
               fractions={2}
               initialRating={ratingValue}
-              stop={10}
+              stop={5}
               onClick={(value) => setRatingValue(value)}
             />
           </div>

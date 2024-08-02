@@ -52,6 +52,11 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Added custom nursery colors here
+        nursery: {
+          primary: "#7CB342",
+          secondary: "#FFFDE7",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -1,4 +1,3 @@
-import { Star } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -6,13 +5,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { TMovie } from "@/types";
+import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 import { RatingModal } from "../RatingModal/RatingMdal";
-import { TMovie } from "@/types";
 
 export function MovieCard({ movie }: { movie: TMovie }) {
   return (
-    <Card className="bg-gray-800 text-white rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
+    <Card className="bg-nursery-secondary text-gray-800 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300">
       <Link to={`/movie/${movie?.slug}`}>
         <CardHeader className="p-2">
           <img

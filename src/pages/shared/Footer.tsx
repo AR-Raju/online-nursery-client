@@ -6,8 +6,8 @@ export default function Footer() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <h5 className="text-lg font-bold text-white">Online Nursery</h5>
-              <p>&copy; 2024 Online Nursery. All rights reserved.</p>
+              <h5 className="text-lg font-bold text-white">SR Nursery</h5>
+              <p>&copy; 2024 SR Nursery. All rights reserved.</p>
             </div>
             <div className="flex space-x-4">
               <a href="/about" className="hover:text-white">

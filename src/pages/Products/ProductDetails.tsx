@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { RatingModal } from "@/components/RatingModal/RatingMdal";
+import { TopProducts } from "@/components/TopProducts/TopProducts";
 import { Button } from "@/components/ui/button";
 import { useGetSingleProductQuery } from "@/redux/api/api";
+import { addToCart } from "@/redux/feature/cartSlice";
+import { useAppDispatch } from "@/redux/hooks";
+import { IProduct } from "@/types";
 // import { useGetproductDetailsAndReviewsQuery } from "@/redux/api/api";
 
-import { Play, Plus, Star, StarIcon } from "lucide-react";
+import { ShoppingCart, Star, StarIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -14,20 +20,31 @@ export default function ProductDetails() {
 
   if (isLoading)
     return (
-      <p className="text-3xl text-center text-yellow-500 my-2 font-bold">
+      <p className="text-3xl text-center text-nursery-primary my-2 font-bold">
         Loading....
       </p>
     );
 
-  const { data: product } = data.product;
-  const reviews = data.reviews.data;
+  const { data: product }: { data: IProduct } = data;
+  // const reviews = data.reviews.data;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = () => {
+    if (product.stock > 0) {
+      dispatch(addToCart(product));
+    } else {
+      toast("This product is out of stock");
+    }
+  };
 
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 10; i++) {
       stars.push(
         i <= rating ? (
-          <Star key={i} className="text-yellow-500" />
+          <Star key={i} className="text-nursery-primary" />
         ) : (
           <StarIcon key={i} className="text-gray-500" />
         )
@@ -35,81 +52,66 @@ export default function ProductDetails() {
     }
     return stars;
   };
-  const formatDate = (isoDate: string): string => {
-    const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
 
   // celculate average rating max 10
-  const totalRating = reviews.reduce((acc: number, review: any) => {
-    return acc + review.rating;
-  }, 0);
-  const averageRating = totalRating / reviews.length;
+  // const totalRating = reviews.reduce((acc: number, review: any) => {
+  //   return acc + review.rating;
+  // }, 0);
+  // const averageRating = totalRating / reviews.length;
   return (
-    <div className="flex flex-col items-center p-4 bg-gray-900 text-white min-h-screen">
-      <div className="max-w-6xl w-full bg-gray-800 rounded-lg shadow-lg p-6 animate__animated animate__fadeIn">
-        <h1 className="text-4xl font-extrabold mb-4">{product?.title}</h1>
-        <div className="flex flex-col md:flex-row">
-          <img
-            src={product?.image}
-            alt="product Poster"
-            className="w-full md:w-1/3 h-auto mb-4 rounded-lg shadow-lg md:mr-6 transform hover:scale-105 transition-transform duration-300"
-          />
-          <div className="flex flex-col justify-between">
-            <div className="text-gray-400 mb-4">
-              <p className="mb-2">
-                <span className="font-semibold text-yellow-500">
-                  Release Date:
-                </span>{" "}
-                {formatDate(product?.releaseDate)}
-              </p>
-              <div className="mb-2 flex items-center">
-                <span className="font-semibold text-yellow-500">Rating:</span>
-                <div className="ml-2 flex">{renderStars(averageRating)}</div>
+    <div className="mx-auto container">
+      <div className="flex flex-col items-center py-4  min-h-screen">
+        <div className=" w-full  rounded-lg shadow-lg p-6 animate__animated animate__fadeIn">
+          <h1 className="text-4xl font-extrabold mb-4">{product?.name}</h1>
+          <div className="flex flex-col md:flex-row mb-6">
+            <img
+              src={product?.image_url}
+              alt="product Poster"
+              className="w-full md:w-1/3 h-auto mb-4 rounded-lg shadow-lg md:mr-6 transform hover:scale-105 transition-transform duration-300"
+            />
+            <div className="flex flex-col justify-between">
+              <div className="text-gray-400 mb-4">
+                <p className="mb-2">
+                  <span className="font-semibold text-nursery-primary">
+                    Price:
+                  </span>{" "}
+                  {product.price}
+                </p>
+                {product.rating && (
+                  <div className="mb-2 flex items-center">
+                    <span className="font-semibold text-nursery-primary">
+                      Rating:
+                    </span>
+                    <div className="ml-2 flex">
+                      {renderStars(product.rating)}
+                    </div>
+                  </div>
+                )}
+                <p className="mb-2">
+                  <span className="font-semibold text-nursery-primary">
+                    Stock:
+                  </span>{" "}
+                  {product?.stock}
+                </p>
+                <p className="mb-2">
+                  <span className="font-semibold text-nursery-primary">
+                    Category:
+                  </span>{" "}
+                  {product?.category}
+                </p>
               </div>
-              <p className="mb-2">
-                <span className="font-semibold text-yellow-500">Genre:</span>{" "}
-                {product?.genre}
-              </p>
-              <p className="mb-2">
-                <span className="font-semibold text-yellow-500">Director:</span>{" "}
-                {product?.director}
-              </p>
-              <p className="mb-4">
-                <span className="font-semibold text-yellow-500">Cast:</span>{" "}
-                {product?.cast}
-              </p>
-            </div>
-            <p className="text-justify mb-4">{product?.description}</p>
-            <div className="flex space-x-4 mb-4">
-              <Button className="px-4 py-2 bg-yellow-500 text-gray-900 rounded-lg font-bold flex items-center hover:bg-yellow-400">
-                <Play className="mr-2" /> Watch Trailer
-              </Button>
-              <Button className="px-4 py-2 bg-gray-700 text-gray-200 rounded-lg font-bold flex items-center hover:bg-gray-600">
-                <Plus className="mr-2" /> Add to Watchlist
-              </Button>
+              <p className="text-justify mb-4">{product?.description}</p>
+              <div className="flex space-x-4 mb-4">
+                <RatingModal key={product._id} product={product} />
+                <Button onClick={handleAddToCart}>
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to cart
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-        <div className="mt-6">
-          <h2 className="text-2xl font-bold mb-4">User Reviews</h2>
-          {reviews.map((review: any) => (
-            <div className="bg-gray-700 p-4 rounded-lg mb-4 animate__animated animate__fadeInUp">
-              <p className="text-yellow-500 font-semibold">{review.email}</p>
-              <p className="text-gray-400 text-sm mb-2">
-                {formatDate(review?.createdAt)}
-              </p>
-              <p>{review.comment}</p>
-            </div>
-          ))}
-          <Button className="px-4 py-2 bg-yellow-500 text-gray-900 rounded-lg font-bold hover:bg-yellow-400">
-            Load More Reviews
-          </Button>
-        </div>
+        <TopProducts />
       </div>
     </div>
   );
