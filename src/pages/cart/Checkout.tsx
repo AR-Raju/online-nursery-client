@@ -65,7 +65,7 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="min-h-[85vh] bg-nursery-secondary flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8">
       <h2 className="text-2xl font-bold mb-4">Checkout Page</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid w-full  items-center gap-1.5">

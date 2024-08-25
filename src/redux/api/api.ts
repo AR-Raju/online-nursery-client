@@ -65,6 +65,14 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["categories"],
     }),
+    updateCategory: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/categories/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["categories"],
+    }),
     placeOrder: builder.mutation({
       query: ({ order }) => ({
         url: `/orders`,
@@ -145,4 +153,5 @@ export const {
   useDeleteProductMutation,
   useDeleteCategoryMutation,
   useUpdateProductMutation,
+  useUpdateCategoryMutation,
 } = baseApi;

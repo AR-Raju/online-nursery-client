@@ -14,10 +14,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const cartItems = useAppSelector((state: RootState) => state.cart.items);
-  const cartItemCount = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const cartItemCount = new Set(cartItems.map((item) => item._id)).size;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

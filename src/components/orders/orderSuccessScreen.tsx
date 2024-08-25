@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const OrderSuccessScreen = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
+    <div className="flex flex-col items-center min-h-[86vh] justify-center bg-gray-50 p-4">
       <CheckCircleIcon className="w-24 h-24 text-green-500 mb-4" />
       <h1 className="text-3xl font-bold mb-2">Order Placed Successfully!</h1>
       <p className="text-lg text-gray-600 mb-6">

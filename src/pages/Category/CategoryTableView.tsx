@@ -1,5 +1,5 @@
+import { CategoryModal } from "@/components/CategoryModal/CategoryModal";
 import { DeleteModal } from "@/components/DeleteModal/DeleteModal";
-import { Button } from "@/components/ui/button";
 import {
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
@@ -45,9 +45,7 @@ export function CategoryTableView() {
               </TableCell>
               <TableCell className="p-2 sm:p-4 text-right">
                 <div className="flex flex-col sm:flex-row justify-end gap-2">
-                  <Button className="w-full sm:w-auto bg-gray-500 text-white text-xs sm:text-sm">
-                    Update
-                  </Button>
+                  <CategoryModal isEdit={true} category={item} />
                   <DeleteModal
                     id={item._id}
                     deleteMutation={deleteCategoryMutation}

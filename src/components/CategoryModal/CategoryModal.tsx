@@ -7,23 +7,41 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useAddCategoryMutation } from "@/redux/api/api";
+import {
+  useAddCategoryMutation,
+  useUpdateCategoryMutation,
+} from "@/redux/api/api";
+import { ICategory } from "@/types";
 import { fileToBase64 } from "@/utils/fileToBase64";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Label } from "../ui/label";
 
-export function AddCategoryModal() {
+interface CategoryModalProps {
+  category?: ICategory;
+  isEdit?: boolean;
+}
+
+export function CategoryModal({ category, isEdit }: CategoryModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
-  const [addCategory, { isLoading }] = useAddCategoryMutation();
+  const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();
+  const [updateCategory, { isLoading: isUpdating }] =
+    useUpdateCategoryMutation();
+
+  useEffect(() => {
+    if (isEdit && category) {
+      setValue("title", category.name);
+    }
+  }, [isEdit, category, setValue]);
 
   const onSubmit = async (values: FieldValues) => {
     const file = values.picture[0]; // Ensure you're getting the first file
@@ -46,7 +64,9 @@ export function AddCategoryModal() {
     };
 
     try {
-      const res = await addCategory({ data }).unwrap();
+      const res = isEdit
+        ? await updateCategory({ id: category?._id, data }).unwrap()
+        : await addCategory({ data }).unwrap();
       if (res?.success) {
         toast.success(res?.message);
         setIsOpen(false);
@@ -68,8 +88,8 @@ export function AddCategoryModal() {
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button className="">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Category
+          {!isEdit && <Plus className="mr-2 h-4 w-4" />}
+          {isEdit ? "Update" : "Add Category"}
         </Button>
       </DialogTrigger>
       <DialogContent className="bg-gray-800 text-white border-0">
@@ -104,7 +124,10 @@ export function AddCategoryModal() {
               <Input
                 id="picture"
                 type="file"
-                {...register("picture", { required: "Image is required" })}
+                {...register(
+                  "picture",
+                  isEdit ? {} : { required: "Image is required" }
+                )}
               />
               {errors.picture && (
                 <span className="text-red-500">
@@ -116,7 +139,7 @@ export function AddCategoryModal() {
 
           <div className="flex justify-end">
             <Button type="submit">
-              {isLoading ? "Uploading..." : "Submit"}
+              {isAdding || isUpdating ? "Processing..." : "Submit"}
             </Button>
           </div>
         </form>
